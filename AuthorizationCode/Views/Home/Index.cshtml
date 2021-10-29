@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <button onclick="loginOnClick();">登入</button>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        function loginOnClick() {
+            var params = new URLSearchParams({
+                response_type: 'code',
+                client_id: 'authorization_code3',
+                scope: 'openid weather_api_1 offline_access',
+                redirect_uri: 'https://localhost:44381/home/callback'
+            });
+
+            location.href = 'https://localhost:44351/connect/authorize?' + params.toString();
+        }
+    </script>
+}

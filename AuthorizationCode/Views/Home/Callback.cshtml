@@ -1,0 +1,49 @@
+﻿@model string
+<button onclick="getWeatherForecast()">載入Weather Forecast</button>
+<div id="weatherForecast"></div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        async function getWeatherForecast() {
+            var res = await fetch('https://localhost:44351/connect/token', {
+                body: new URLSearchParams({
+                    grant_type: 'authorization_code',
+                    code: '@Model',
+                    redirect_uri: 'https://localhost:44381/home/callback',
+                }),
+                method: 'post',
+                headers: {
+                    'Authorization': 'Basic ' + btoa('authorization_code3:authorization_code')
+                }
+            });
+
+            var json = await res.json();
+            console.log(json);
+
+            // refresh token
+            res = await fetch('https://localhost:44351/connect/token', {
+                body: new URLSearchParams({
+                    grant_type: 'refresh_token',
+                    refresh_token: json.refresh_token
+                }),
+                method: 'post',
+                headers: {
+                    'Authorization': 'Basic ' + btoa('authorization_code3:authorization_code')
+                }
+            });
+            json = await res.json();
+            console.log(json);
+
+            res = await fetch('https://localhost:44311/WeatherForecast', {
+                method: 'get',
+                headers: {
+                    'Authorization': 'Bearer ' + json.access_token
+                }
+            });
+
+            var text = await res.text();
+            $("#weatherForecast").text(text);
+        }
+    </script>
+}
